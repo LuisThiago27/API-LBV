@@ -103,7 +103,7 @@ app.get("/atividades", async (req, res) => {
 
 app.get("/contatos", async (req, res) => {
     try {
-        let start = 200;
+        let start = 0;
         const params = {
             FILTER: { "%FULL_NAME": req.query.term }
         };

@@ -40,12 +40,19 @@ app.get("/unidades", async (req, res) => {
 });
 */
 
+app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*"); // Permitindo todas as origens
+    res.setHeader("Access-Control-Allow-Methods", "*"); // Permitindo todos os métodos HTTP
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    next();
+});
+
 let unidades = [];
-app.use(async (req, res, next) => {
+app.get("/unidades", async (req, res) => {
     try {
-        let start = 0
-        let total = 50
-        while(total > start){
+        let start = 0;
+        let total = 50;
+        while (total > start) {
             const params = {
                 SELECT: ["NAME"],
                 ORDER: { "NAME": "ASC" },
@@ -58,23 +65,14 @@ app.use(async (req, res, next) => {
             total = response.data.total;
             start = (response.data.next ? response.data.next : total);
 
-            const itens = data.result.map(obj => ({
+            const items = data.result.map(obj => ({
                 id: obj.ID,
                 text: obj.NAME
             }));
 
-            unidades.push(itens, total, start);
+            unidades.push(...items);
         }       
-        next();
-    } catch (error) {
-        console.error("Erro ao fazer requisição:", error);
-        res.status(500).send("Erro ao obter os dados:" + error);
-    }
-});
-
-app.get("/unidades", (req, res) => {
-    try {
-        res.send({ results: unidades, total: unidades.total, start: unidades.start });
+        res.send({ results: unidades, total: total });
     } catch (error) {
         console.error("Erro ao fazer requisição:", error);
         res.status(500).send("Erro ao obter os dados:" + error);

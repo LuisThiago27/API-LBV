@@ -200,6 +200,26 @@ app.get("/participantes", async (req, res) => {
     }
 });
 
+app.get("/motivacao", async (req, res) => {
+    try {
+        const params = {
+            FILTER: { "%NAME": req.query.term }
+        };
+
+        const response = await axios.get("https://religiaodedeus.bitrix24.com/rest/1618/eid3z4w5t9h1dw8y/lists.element.get?IBLOCK_TYPE_ID=lists&IBLOCK_ID=33", { params });
+        const data = response.data;
+
+        const itens = data.result.map(obj => ({
+            id: obj.ID,
+            text: obj.NAME
+        }));
+        res.send({ results: itens});
+    } catch (error) {
+        console.error("Erro ao fazer requisição:", error);
+        res.status(500).send("Erro ao obter os dados:" + error);
+    }
+});
+
 app.listen(port, () => {
     console.log('App running')
 })

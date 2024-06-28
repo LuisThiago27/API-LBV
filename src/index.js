@@ -127,9 +127,9 @@ app.get("/pregador-responsavel", async (req, res) => {
         let start = 0;
         const params = {
             SELECT: [
-                "NAME", "LAST_NAME"
+                "TITLE"
             ],
-            FILTER: { "%FULL_NAME": req.query.term }
+            FILTER: { "%TITLE": req.query.term }
         };
 
         const response = await axios.get("https://religiaodedeus.bitrix24.com/rest/1618/eid3z4w5t9h1dw8y/crm.company.list?start=" + start, { params });
@@ -139,7 +139,7 @@ app.get("/pregador-responsavel", async (req, res) => {
 
         const itens = data.result.map(obj => ({
             id: obj.ID,
-            text: obj.NAME + ' ' +  obj.LAST_NAME
+            text: obj.TITLE
         }));
         res.send({ results: itens, total, next});
     } catch (error) {

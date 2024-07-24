@@ -82,7 +82,7 @@ app.get("/unidades", async (req, res) => {
 app.get("/atividades", async (req, res) => {
     try {
         const params = {
-            FILTER: { "%NAME": req.query.term }
+            FILTER: { "%NAME": req.query.term, "%PROPERTY_927": 523 }
         };
 
         const response = await axios.get("https://religiaodedeus.bitrix24.com/rest/1618/eid3z4w5t9h1dw8y/lists.element.get?IBLOCK_TYPE_ID=lists&IBLOCK_ID=59", { params });

@@ -90,7 +90,8 @@ app.get("/atividades", async (req, res) => {
 
         const itens = data.result.map(obj => ({
             id: obj.ID,
-            text: obj.NAME
+            text: obj.NAME,
+            type: obj.PROPERTY_927 ? Object.values(obj.PROPERTY_927)[0] : null
         }));
         res.send({ results: itens});
     } catch (error) {

@@ -79,7 +79,7 @@ app.get("/unidades", async (req, res) => {
     }
 });
 
-app.get("/atividades", async (req, res) => {
+app.get("/atividades_coletivas", async (req, res) => {
     try {
         const params = {
             FILTER: { "%NAME": req.query.term, "%PROPERTY_927": 523 }
@@ -90,8 +90,27 @@ app.get("/atividades", async (req, res) => {
 
         const itens = data.result.map(obj => ({
             id: obj.ID,
-            text: obj.NAME,
-            type: obj.PROPERTY_927 ? Object.values(obj.PROPERTY_927)[0] : null
+            text: obj.NAME
+        }));
+        res.send({ results: itens});
+    } catch (error) {
+        console.error("Erro ao fazer requisição:", error);
+        res.status(500).send("Erro ao obter os dados:" + error);
+    }
+});
+
+app.get("/atividades_individuais", async (req, res) => {
+    try {
+        const params = {
+            FILTER: { "%NAME": req.query.term, "%PROPERTY_927": 525 }
+        };
+
+        const response = await axios.get("https://religiaodedeus.bitrix24.com/rest/1618/eid3z4w5t9h1dw8y/lists.element.get?IBLOCK_TYPE_ID=lists&IBLOCK_ID=59", { params });
+        const data = response.data;
+
+        const itens = data.result.map(obj => ({
+            id: obj.ID,
+            text: obj.NAME
         }));
         res.send({ results: itens});
     } catch (error) {

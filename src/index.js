@@ -146,10 +146,7 @@ app.get("/pregador-responsavel", async (req, res) => {
     try {
         let start = 0;
         const params = {
-            SELECT: [
-                "TITLE"
-            ],
-            FILTER: { "%TITLE": req.query.term }
+            FILTER: { "%FULL_NAME": req.query.term }
         };
 
         const response = await axios.get("https://religiaodedeus.bitrix24.com/rest/1618/eid3z4w5t9h1dw8y/user.get?start=" + start, { params });
@@ -159,7 +156,7 @@ app.get("/pregador-responsavel", async (req, res) => {
 
         const itens = data.result.map(obj => ({
             id: obj.ID,
-            text: obj.TITLE
+            text: obj.NAME + ' ' +  obj.LAST_NAME //Se precisar colocar SECOND_NAME
         }));
         res.send({ results: itens, total, next});
     } catch (error) {

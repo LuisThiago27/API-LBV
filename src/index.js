@@ -152,7 +152,7 @@ app.get("/pregador-responsavel", async (req, res) => {
             FILTER: { "%TITLE": req.query.term }
         };
 
-        const response = await axios.get("https://religiaodedeus.bitrix24.com/rest/1618/eid3z4w5t9h1dw8y/crm.company.list?start=" + start, { params });
+        const response = await axios.get("https://religiaodedeus.bitrix24.com/rest/1618/eid3z4w5t9h1dw8y/user.get?start=" + start, { params });
         const data = response.data;
         const total = response.data.total;
         const next = response.data.next;

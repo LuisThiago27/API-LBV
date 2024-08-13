@@ -236,6 +236,7 @@ app.get("/motivacao", async (req, res) => {
         res.status(500).send("Erro ao obter os dados:" + error);
     }
 });
+const querystring = require('querystring');
 
 const clientId = '601370ad-5e5c-411d-982f-dbe59b4a7692';
 const tenantId = '60f5c5a4-2944-4497-bc5b-6da5d82f7edd';
@@ -253,26 +254,31 @@ app.get('/auth/microsoft', async (req, res) => {
 
     const data = {
         client_id: clientId,
-        scope: 'openid User.Read',
+        scope: 'User.Read',
         code: code,
         redirect_uri: redirectUri,
         grant_type: 'authorization_code',
     };
 
     try {
+        console.log("Enviando dados para a Microsoft:", data);
+
         const response = await axios.post(tokenEndpoint, querystring.stringify(data), {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         });
 
+        console.log("Resposta da Microsoft:", response.data);
+
         const accessToken = response.data.access_token;
         res.send({ accessToken });
     } catch (error) {
-        console.error("Erro ao autenticar na Microsoft Azure:", error);
-        res.status(500).send("Erro ao autenticar:" + error);
+        console.error("Erro ao autenticar na Microsoft Azure:", error.response ? error.response.data : error.message);
+        res.status(500).send("Erro ao autenticar: " + (error.response ? error.response.data : error.message));
     }
 });
+
 
 app.listen(port, () => {
     console.log('App running')

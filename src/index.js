@@ -237,6 +237,43 @@ app.get("/motivacao", async (req, res) => {
     }
 });
 
+const clientId = '601370ad-5e5c-411d-982f-dbe59b4a7692';
+const tenantId = '60f5c5a4-2944-4497-bc5b-6da5d82f7edd';
+//const clientSecret = 'SUA_CLIENT_SECRET'; // Substitua pela sua client secret
+const redirectUri = 'https://api-lbv.vercel.app/auth/microsoft';
+
+app.get('/auth/microsoft', async (req, res) => {
+    const code = req.query.code;
+
+    if (!code) {
+        return res.status(400).send("O código de autenticação é necessário.");
+    }
+
+    const tokenEndpoint = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`;
+
+    const data = {
+        client_id: clientId,
+        scope: 'openid User.Read',
+        code: code,
+        redirect_uri: redirectUri,
+        grant_type: 'authorization_code',
+    };
+
+    try {
+        const response = await axios.post(tokenEndpoint, querystring.stringify(data), {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        });
+
+        const accessToken = response.data.access_token;
+        res.send({ accessToken });
+    } catch (error) {
+        console.error("Erro ao autenticar na Microsoft Azure:", error);
+        res.status(500).send("Erro ao autenticar:" + error);
+    }
+});
+
 app.listen(port, () => {
     console.log('App running')
 })

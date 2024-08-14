@@ -255,7 +255,7 @@ app.get('/auth/microsoft', (req, res) => {
 
 app.get('/auth/microsoft/callback', async (req, res) => {
     const code = req.query.code;
-
+    console.log('Authorization code:', code);
     try {
         const response = await axios.post(
             `https://login.microsoftonline.com/${process.env.TENANT_ID}/oauth2/v2.0/token`,
@@ -273,7 +273,7 @@ app.get('/auth/microsoft/callback', async (req, res) => {
                 },
             }
         );
-
+        console.log('Token response:', response.data);
         const { access_token } = response.data;
         res.json({ access_token });
     } catch (error) {

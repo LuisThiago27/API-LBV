@@ -251,6 +251,7 @@ app.get('/auth/microsoft', async (req, res) => {
     }
 
     const tokenEndpoint = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`;
+    
 
     const data = {
         client_id: clientId,

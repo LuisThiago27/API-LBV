@@ -250,7 +250,7 @@ app.get('/auth/microsoft', (req, res) => {
     });
 
     const tenantId = process.env.TENANT_ID;
-    res.redirect(`https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/authorize?${params}`);
+    res.redirect(`https://login.microsoftonline.com/common/oauth2/v2.0/authorize?${params}`);
 });
 
 app.get('/auth/microsoft/callback', async (req, res) => {
@@ -258,7 +258,7 @@ app.get('/auth/microsoft/callback', async (req, res) => {
     console.log('Authorization code:', code);
     try {
         const response = await axios.post(
-            `https://login.microsoftonline.com/${process.env.TENANT_ID}/oauth2/v2.0/token`,
+            `https://login.microsoftonline.com/common/oauth2/v2.0/token`,
             querystring.stringify({
                 client_id: process.env.CLIENT_ID,
                 scope: 'user.read',

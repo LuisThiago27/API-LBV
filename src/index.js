@@ -236,47 +236,48 @@ app.get("/motivacao", async (req, res) => {
         res.status(500).send("Erro ao obter os dados:" + error);
     }
 });
+
 const querystring = require('querystring');
 
-const clientId = '601370ad-5e5c-411d-982f-dbe59b4a7692';
-const tenantId = '60f5c5a4-2944-4497-bc5b-6da5d82f7edd';
-//const clientSecret = 'SUA_CLIENT_SECRET'; // Substitua pela sua client secret
-const redirectUri = 'https://api-lbv.vercel.app/auth/microsoft';
+app.get('/auth/microsoft', (req, res) => {
+    const params = querystring.stringify({
+        client_id: process.env.CLIENT_ID,
+        response_type: 'code',
+        redirect_uri: 'https://api-lbv.vercel.app/auth/microsoft/callback',
+        response_mode: 'query',
+        scope: 'user.read',
+        state: 'some_random_state',
+    });
 
-app.get('/auth/microsoft', async (req, res) => {
+    const tenantId = process.env.TENANT_ID;
+    res.redirect(`https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/authorize?${params}`);
+});
+
+app.get('/auth/microsoft/callback', async (req, res) => {
     const code = req.query.code;
 
-    if (!code) {
-        return res.status(400).send("O código de autenticação é necessário.");
-    }
-
-    const tokenEndpoint = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`;
-    
-
-    const data = {
-        client_id: clientId,
-        scope: 'User.Read',
-        code: code,
-        redirect_uri: redirectUri,
-        grant_type: 'authorization_code',
-    };
-
     try {
-        console.log("Enviando dados para a Microsoft:", data);
-
-        const response = await axios.post(tokenEndpoint, querystring.stringify(data), {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
+        const response = await axios.post(
+            `https://login.microsoftonline.com/${process.env.TENANT_ID}/oauth2/v2.0/token`,
+            querystring.stringify({
+                client_id: process.env.CLIENT_ID,
+                scope: 'user.read',
+                code: code,
+                redirect_uri: 'https://api-lbv.vercel.app/auth/microsoft/callback',
+                grant_type: 'authorization_code',
+                client_secret: process.env.CLIENT_SECRET,
+            }),
+            {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
             }
-        });
+        );
 
-        console.log("Resposta da Microsoft:", response.data);
-
-        const accessToken = response.data.access_token;
-        res.send({ accessToken });
+        const { access_token } = response.data;
+        res.json({ access_token });
     } catch (error) {
-        console.error("Erro ao autenticar na Microsoft Azure:", error.response ? error.response.data : error.message);
-        res.status(500).send("Erro ao autenticar: " + (error.response ? error.response.data : error.message));
+        res.status(500).json({ error: 'Failed to obtain access token' });
     }
 });
 

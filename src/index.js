@@ -4,41 +4,43 @@ const axios = require("axios");
 const app = express();
 const port = 3000;
 
-/*
-let unidades = new Array();
+
 app.get("/unidades", async (req, res) => {
     try {
-        let start = 0
-        let total = 50
-        while(total > start){
+        let unidades = [];  // Mover a definição do array para dentro da função
+        let start = 0;
+        let total = 50;
+
+        while (total > start) {
             const params = {
                 SELECT: ["NAME"],
                 ORDER: { "NAME": "ASC" },
                 FILTER: { "%NAME": req.query.term },
                 start: start
             };
-    
+
             const response = await axios.get("https://religiaodedeus.bitrix24.com/rest/1618/eid3z4w5t9h1dw8y/lists.element.get?IBLOCK_TYPE_ID=lists&IBLOCK_ID=109", { params });
             const data = response.data;
-            total = response.data.total;
-            start = (response.data.next ? response.data.next : total);
+
+            total = data.total;
+            start = data.next ? data.next : total;
 
             const itens = data.result.map(obj => ({
                 id: obj.ID,
                 text: obj.NAME
             }));
 
-            unidades.push(itens);
-        }       
-        //const pagination = { more: data.next ? true : false };
-        //res.send({ results: unidades, pagination, total, next });
-        res.send({ results: unidades, total: total});
+            unidades = unidades.concat(itens);  // Concatenar os itens ao array
+        }
+
+        res.send({ results: unidades, total: total });
     } catch (error) {
         console.error("Erro ao fazer requisição:", error);
         res.status(500).send("Erro ao obter os dados:" + error);
     }
 });
-*/
+
+
 
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*"); // Permitindo todas as origens
@@ -47,6 +49,7 @@ app.use((req, res, next) => {
     next();
 });
 
+/*
 let unidades = [];
 app.get("/unidades", async (req, res) => {
     try {
@@ -78,6 +81,7 @@ app.get("/unidades", async (req, res) => {
         res.status(500).send("Erro ao obter os dados:" + error);
     }
 });
+*/
 
 app.get("/atividades_coletivas", async (req, res) => {
     try {

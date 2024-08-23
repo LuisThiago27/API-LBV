@@ -131,7 +131,6 @@ app.get("/contatos", async (req, res) => {
 
         while (total > start) {
             const params = {
-                ORDER: { "%FULL_NAME": "ASC" },
                 FILTER: { "%FULL_NAME": req.query.term },
                 start: start
             };
@@ -144,12 +143,12 @@ app.get("/contatos", async (req, res) => {
 
             const itens = data.result.map(obj => ({
                 id: obj.ID,
-                text: obj.NAME + ' ' +  obj.LAST_NAME
+                text: `${obj.NAME} ${obj.LAST_NAME}`
             }));
 
             contatos = contatos.concat(itens);
         }
-        res.send({ results: contatos, total: total});
+        res.send({ results: contatos, total});
 
     } catch (error) {
         console.error("Erro ao fazer requisição:", error);

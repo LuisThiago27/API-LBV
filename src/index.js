@@ -125,36 +125,35 @@ app.get("/atividades_individuais", async (req, res) => {
 
 app.get("/contatos", async (req, res) => {
     try {
-        let contatos = [];
+        const term = req.query.term;
         let start = 0;
-        let total = 50;
 
-        while (total > start) {
-            const params = {
-                FILTER: { "%FULL_NAME": req.query.term },
-                start: start
-            };
+        const [firstName, lastName] = term.split(' ');
+        const params = {
+            FILTER: {
+                '%NAME': firstName || '',
+                '%SECOND_NAME': lastName || '',
+                '%LAST_NAME': lastName || ''
+            }
+        };
 
-            const response = await axios.get("https://religiaodedeus.bitrix24.com/rest/1618/eid3z4w5t9h1dw8y/crm.contact.list", { params });
-            const data = response.data;
-            
-            total = data.total;
-            start = data.next ? data.next : total;
+        const response = await axios.get("https://religiaodedeus.bitrix24.com/rest/1618/eid3z4w5t9h1dw8y/crm.contact.list?start=" + start, { params });
+        const data = response.data;
+        const total = data.total;
+        const next = data.next;
 
-            const itens = data.result.map(obj => ({
-                id: obj.ID,
-                text: `${obj.NAME} ${obj.LAST_NAME}`
-            }));
-
-            contatos = contatos.concat(itens);
-        }
-        res.send({ results: contatos, total});
-
+        const itens = data.result.map(obj => ({
+            id: obj.ID,
+            text: [obj.NAME, obj.SECOND_NAME, obj.LAST_NAME].filter(Boolean).join(' ')
+        }));
+        
+        res.send({ results: itens, total, next });
     } catch (error) {
-        console.error("Erro ao fazer requisição:", error);
-        res.status(500).send("Erro ao obter os dados:" + error);
+        console.error("Erro ao fazer requisição:", error.message || error);
+        res.status(500).send("Erro ao obter os dados: " + (error.message || error));
     }
 });
+
 
 app.get("/pregador-responsavel", async (req, res) => {
     try {

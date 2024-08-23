@@ -131,7 +131,7 @@ app.get("/contatos", async (req, res) => {
 
         while (total > start) {
             const params = {
-                ORDER: { "NAME": "ASC" },
+                ORDER: { "%FULL_NAME": "ASC" },
                 FILTER: { "%FULL_NAME": req.query.term },
                 start: start
             };
@@ -149,7 +149,7 @@ app.get("/contatos", async (req, res) => {
 
             contatos = contatos.concat(itens);
         }
-        res.send({ results: contatos, total, next});
+        res.send({ results: contatos, total: total});
 
     } catch (error) {
         console.error("Erro ao fazer requisição:", error);

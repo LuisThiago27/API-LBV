@@ -127,9 +127,12 @@ app.get("/contatos", async (req, res) => {
     try {
         const term = req.query.term;
         let start = 0;
+
+        const [firstName, lastName] = term.split(' ')
         const params = {
             FILTER: {
-                'NAME': term,
+                'NAME': firstName,
+                'SECOND_NAME': lastName,
             }
         };
 

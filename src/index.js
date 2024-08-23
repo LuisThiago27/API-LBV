@@ -125,16 +125,19 @@ app.get("/atividades_individuais", async (req, res) => {
 
 app.get("/contatos", async (req, res) => {
     try {
-        const term = req.query.term;
-        let start = 0;
-
-        const [firstName, lastName] = term.split(' ')
-        const params = {
+        const term = req.query.term || '';
+        const [firstName, secondName] = term.split(' ');
+        let params = {
+            ORDER: { "NAME": "ASC" },
             FILTER: {
-                'NAME': firstName,
-                'SECOND_NAME': lastName,
+                '%NAME': firstName || ''
             }
         };
+
+        if (secondName) {
+            params.FILTER['%SECOND_NAME'] = secondName;
+            params.FILTER['%LAST_NAME'] = secondName;
+        }
 
         const response = await axios.get("https://religiaodedeus.bitrix24.com/rest/1618/eid3z4w5t9h1dw8y/crm.contact.list", { params });
         const data = response.data;
@@ -143,7 +146,7 @@ app.get("/contatos", async (req, res) => {
 
         const itens = data.result.map(obj => ({
             id: obj.ID,
-            text: obj.NAME + ' ' +  obj.LAST_NAME
+            text: [obj.NAME, obj.SECOND_NAME, obj.LAST_NAME].filter(Boolean).join(' ')
         }));
         
         res.send({ results: itens, total, next });

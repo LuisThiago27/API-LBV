@@ -136,7 +136,7 @@ app.get("/contatos", async (req, res) => {
                 start: start
             };
 
-            const response = await axios.get("https://religiaodedeus.bitrix24.com/rest/1618/eid3z4w5t9h1dw8y/crm.contact.list?start=" + start, { params });
+            const response = await axios.get("https://religiaodedeus.bitrix24.com/rest/1618/eid3z4w5t9h1dw8y/crm.contact.list", { params });
             const data = response.data;
             
             total = data.total;
@@ -149,8 +149,8 @@ app.get("/contatos", async (req, res) => {
 
             contatos = contatos.concat(itens);
         }
-        res.send({ results: itens, total, next});
-        
+        res.send({ results: contatos, total, next});
+
     } catch (error) {
         console.error("Erro ao fazer requisição:", error);
         res.status(500).send("Erro ao obter os dados:" + error);

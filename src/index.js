@@ -7,7 +7,7 @@ const port = 3000;
 
 app.get("/unidades", async (req, res) => {
     try {
-        let unidades = [];  // Mover a definição do array para dentro da função
+        let unidades = [];
         let start = 0;
         let total = 50;
 
@@ -30,7 +30,7 @@ app.get("/unidades", async (req, res) => {
                 text: obj.NAME
             }));
 
-            unidades = unidades.concat(itens);  // Concatenar os itens ao array
+            unidades = unidades.concat(itens);
         }
 
         res.send({ results: unidades, total: total });
@@ -125,21 +125,32 @@ app.get("/atividades_individuais", async (req, res) => {
 
 app.get("/contatos", async (req, res) => {
     try {
+        let contatos = [];
         let start = 0;
-        const params = {
-            FILTER: { "%FULL_NAME": req.query.term }
-        };
+        let total = 50;
 
-        const response = await axios.get("https://religiaodedeus.bitrix24.com/rest/1618/eid3z4w5t9h1dw8y/crm.contact.list?start=" + start, { params });
-        const data = response.data;
-        const total = response.data.total;
-        const next = response.data.next;
+        while (total > start) {
+            const params = {
+                ORDER: { "NAME": "ASC" },
+                FILTER: { "%FULL_NAME": req.query.term },
+                start: start
+            };
 
-        const itens = data.result.map(obj => ({
-            id: obj.ID,
-            text: obj.NAME + ' ' +  obj.LAST_NAME
-        }));
+            const response = await axios.get("https://religiaodedeus.bitrix24.com/rest/1618/eid3z4w5t9h1dw8y/crm.contact.list?start=" + start, { params });
+            const data = response.data;
+            
+            total = data.total;
+            start = data.next ? data.next : total;
+
+            const itens = data.result.map(obj => ({
+                id: obj.ID,
+                text: obj.NAME + ' ' +  obj.LAST_NAME
+            }));
+
+            contatos = contatos.concat(itens);
+        }
         res.send({ results: itens, total, next});
+        
     } catch (error) {
         console.error("Erro ao fazer requisição:", error);
         res.status(500).send("Erro ao obter os dados:" + error);

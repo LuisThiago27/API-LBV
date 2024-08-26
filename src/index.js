@@ -127,7 +127,7 @@ app.get("/contatos", async (req, res) => {
     try {
         let params = {
             FILTER: {
-                '%NAME': req.query.term
+                '%FULL_NAME': req.query.term
             },
             start: 0,
         };

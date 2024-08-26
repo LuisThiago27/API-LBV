@@ -126,40 +126,31 @@ app.get("/atividades_individuais", async (req, res) => {
 app.get("/contatos", async (req, res) => {
     try {
         const term = req.query.term || '';
-        let start = 0;
-        
-        // Se o termo estiver vazio, retorna todos os contatos
-        const params = {
-            FILTER: {}
+        let params = {
+            ORDER: { "NAME": "ASC" },
+            FILTER: {
+                '%NAME': term || '',
+                '%SECOND_NAME': term || '',
+                '%LAST_NAME': term || ''
+            }
         };
 
-        if (term) {
-            const [firstName, secondName] = term.split(' ');
-            params.FILTER['%NAME'] = firstName || '';
-
-            if (secondName) {
-                params.FILTER['%SECOND_NAME'] = secondName;
-                params.FILTER['%LAST_NAME'] = secondName;
-            }
-        }
-
-        const response = await axios.get("https://religiaodedeus.bitrix24.com/rest/1618/eid3z4w5t9h1dw8y/crm.contact.list?start=" + start, { params });
+        const response = await axios.get("https://religiaodedeus.bitrix24.com/rest/1618/eid3z4w5t9h1dw8y/crm.contact.list", { params });
         const data = response.data;
         const total = data.total;
         const next = data.next;
 
         const itens = data.result.map(obj => ({
             id: obj.ID,
-            text: [obj.NAME, obj.SECOND_NAME, obj.LAST_NAME].filter(Boolean).join(' ')
+            text: `${obj.NAME ? obj.SECOND_NAME : '' ? obj.LAST_NAME : ''}`
         }));
-
+        
         res.send({ results: itens, total, next });
     } catch (error) {
         console.error("Erro ao fazer requisição:", error.message || error);
         res.status(500).send("Erro ao obter os dados: " + (error.message || error));
     }
 });
-
 
 
 app.get("/pregador-responsavel", async (req, res) => {

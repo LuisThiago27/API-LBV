@@ -140,7 +140,7 @@ app.get("/contatos", async (req, res) => {
 
         const itens = data.result.map(obj => ({
             id: obj.ID,
-            text: `${obj.NAME ? obj.SECOND_NAME : '' ? obj.LAST_NAME : ''}`
+            text: [obj.NAME, obj.SECOND_NAME, obj.LAST_NAME].filter(Boolean).join(' ')
         }));
 
         res.send({ results: itens, total, next });

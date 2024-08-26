@@ -126,27 +126,30 @@ app.get("/atividades_individuais", async (req, res) => {
 app.get("/contatos", async (req, res) => {
     try {
         const term = req.query.term;
-        const [firstName, lastName] = term.split(' ');
-        let params = {
-            ORDER: { "NAME": "ASC" },
-            FILTER: {
-                '%NAME': firstName || '',
-                '%SECOND_NAME': lastName || '',
-                '%LAST_NAME': lastName || ''
-            }
-        };
+        if (term) {
+            const [firstName, lastName] = term.split(' ');
 
-        const response = await axios.get("https://religiaodedeus.bitrix24.com/rest/1618/eid3z4w5t9h1dw8y/crm.contact.list", { params });
-        const data = response.data;
-        const total = data.total;
-        const next = data.next;
+            let params = {
+                ORDER: { "NAME": "ASC" },
+                FILTER: {
+                    '%NAME': firstName || '',
+                    '%SECOND_NAME': lastName || '',
+                    '%LAST_NAME': lastName || ''
+                }
+            };
+    
+            const response = await axios.get("https://religiaodedeus.bitrix24.com/rest/1618/eid3z4w5t9h1dw8y/crm.contact.list", { params });
+            const data = response.data;
+            const total = data.total;
+            const next = data.next;
+    
+            const itens = data.result.map(obj => ({
+                id: obj.ID,
+                text: `${obj.NAME ? obj.SECOND_NAME : '' ? obj.LAST_NAME : ''}`
+            }));
 
-        const itens = data.result.map(obj => ({
-            id: obj.ID,
-            text: `${obj.NAME ? obj.SECOND_NAME : '' ? obj.LAST_NAME : ''}`
-        }));
-        
-        res.send({ results: itens, total, next });
+            res.send({ results: itens, total, next });
+        }
     } catch (error) {
         console.error("Erro ao fazer requisição:", error.message || error);
         res.status(500).send("Erro ao obter os dados: " + (error.message || error));

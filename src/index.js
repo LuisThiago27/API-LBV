@@ -126,7 +126,6 @@ app.get("/atividades_individuais", async (req, res) => {
 app.get("/contatos", async (req, res) => {
     try {
         let params = {
-            ORDER: { "NAME": "ASC" },
             FILTER: {
                 '%NAME': req.query.term
             },
@@ -140,7 +139,7 @@ app.get("/contatos", async (req, res) => {
 
         const itens = data.result.map(obj => ({
             id: obj.ID,
-            text: [obj.NAME, obj.SECOND_NAME, obj.LAST_NAME].filter(Boolean).join(' ')
+            text: `${obj.NAME} ${obj.SECOND_NAME ? obj.SECOND_NAME : ''}${obj.LAST_NAME ? obj.LAST_NAME : ''}`
         }));
 
         res.send({ results: itens, total, next });

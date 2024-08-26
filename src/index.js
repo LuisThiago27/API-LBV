@@ -125,13 +125,14 @@ app.get("/atividades_individuais", async (req, res) => {
 
 app.get("/contatos", async (req, res) => {
     try {
-        const term = req.query.term || '';
+        const term = req.query.term;
+        const [firstName, lastName] = term.split(' ');
         let params = {
             ORDER: { "NAME": "ASC" },
             FILTER: {
-                '%NAME': term || '',
-                '%SECOND_NAME': term || '',
-                '%LAST_NAME': term || ''
+                '%NAME': firstName || '',
+                '%SECOND_NAME': lastName || '',
+                '%LAST_NAME': lastName || ''
             }
         };
 

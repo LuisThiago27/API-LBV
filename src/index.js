@@ -246,6 +246,40 @@ app.get("/motivacao", async (req, res) => {
     }
 });
 
+app.post('/envia-atividade', async (req, res) => {
+    const {
+        contato, atividade, pregador, selectedIdRadio, observacao,
+        realizador, motivacao, participantesTotais, participantesIniciantes,
+        codParticipantesModificados, dataFormatada
+    } = req.body;
+
+    try {
+        const response = await axios.post('https://religiaodedeus.bitrix24.com/rest/1618/eid3z4w5t9h1dw8y/crm.item.add', {
+            entityTypeId: 165,
+            fields: {
+                title: "Atividade e Participação para",
+                ufCrm37_1680781222: dataFormatada,
+                ufCrm37_1680781696: pregador,
+                contactId: contato,
+                ufCrm37_1680785492: observacao,
+                ufCrm37_1681127182: atividade,
+                ufCrm37_1680784996: selectedIdRadio,
+                ufCrm37_1680781778: realizador,
+                ufCrm37_1680782329: motivacao,
+                ufCrm37_1680785178: participantesTotais,
+                ufCrm37_1680785259: participantesIniciantes,
+                ufCrm37_1680785090: codParticipantesModificados
+            }
+        });
+
+        res.status(200).json({ message: 'Enviado com sucesso!', data: response.data });
+    } catch (error) {
+        console.error('Erro ao enviar:', error);
+        res.status(500).json({ error: 'Erro ao enviar para o Bitrix.' });
+    }
+});
+
+
 app.post('/envia-solicitacao', async (req, res) => {
     const { pregador, observacao } = req.body;
 

@@ -246,6 +246,26 @@ app.get("/motivacao", async (req, res) => {
     }
 });
 
+app.post('/envia-solicitacao', async (req, res) => {
+    const { pregador, observacao } = req.body;
+
+    try {
+        const response = await axios.post('https://religiaodedeus.bitrix24.com/rest/1618/eid3z4w5t9h1dw8y/tasks.task.add', {
+            fields: {
+                TITLE: `Solicitação de ${pregador} pelo app`,
+                DESCRIPTION: observacao,
+                RESPONSIBLE_ID: pregador,
+                GROUP_ID: 118
+            }
+        });
+
+        return res.status(200).json({ message: 'Enviado com sucesso!', data: response.data });
+    } catch (error) {
+        console.error('Erro ao enviar:', error);
+        return res.status(500).json({ error: 'Erro ao enviar para o Bitrix.' });
+    }
+});
+
 const querystring = require('querystring');
 
 app.get('/auth/microsoft', (req, res) => {

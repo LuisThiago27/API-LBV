@@ -275,7 +275,7 @@ app.post('/envia-atividade', async (req, res) => {
         res.status(200).json({ message: 'Enviado com sucesso!', data: response.data });
     } catch (error) {
         console.error('Erro ao enviar:', error);
-        res.status(500).json({ error: 'Erro ao enviar para o Bitrix.' });
+        res.status(500).send("Erro ao enviar os dados:" + error);
     }
 });
 
@@ -293,10 +293,10 @@ app.post('/envia-solicitacao', async (req, res) => {
             }
         });
 
-        return res.status(200).json({ message: 'Enviado com sucesso!', data: response.data });
+        res.send({ message: 'Enviado com sucesso!', data: response.data});
     } catch (error) {
         console.error('Erro ao enviar:', error);
-        return res.status(500).json({ error: 'Erro ao enviar para o Bitrix.' });
+        res.status(500).send("Erro ao enviar os dados:" + error);
     }
 });
 

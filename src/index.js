@@ -281,14 +281,14 @@ app.post('/envia-atividade', async (req, res) => {
 
 
 app.post('/envia-solicitacao', async (req, res) => {
-    const { pregador, observacao } = req.body;
+    //const { pregador, observacao } = req.body;
 
     try {
         const response = await axios.post('https://religiaodedeus.bitrix24.com/rest/1618/eid3z4w5t9h1dw8y/tasks.task.add', {
             fields: {
-                TITLE: `Solicitação de ${pregador} pelo app`,
-                DESCRIPTION: observacao,
-                RESPONSIBLE_ID: pregador,
+                TITLE: `Solicitação de Luis pelo app`,
+                DESCRIPTION: 'Teste de api',
+                RESPONSIBLE_ID: 1,
                 GROUP_ID: 118
             }
         });

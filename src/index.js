@@ -4,6 +4,12 @@ const axios = require("axios");
 const app = express();
 const port = 3000;
 
+app.use(express.json(),(req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*"); // Permitindo todas as origens
+    res.setHeader("Access-Control-Allow-Methods", "*"); // Permitindo todos os métodos HTTP
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    next();
+});
 
 app.get("/unidades", async (req, res) => {
     try {
@@ -40,15 +46,6 @@ app.get("/unidades", async (req, res) => {
     }
 });
 
-
-
-app.use((req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "*"); // Permitindo todas as origens
-    res.setHeader("Access-Control-Allow-Methods", "*"); // Permitindo todos os métodos HTTP
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    next();
-    express.json()
-});
 
 /*
 let unidades = [];

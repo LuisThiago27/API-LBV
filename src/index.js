@@ -248,7 +248,7 @@ app.post('/envia-atividade', async (req, res) => {
     const {
         contato, atividade, pregador, selectedIdRadio, observacao,
         realizador, motivacao, participantesTotais, participantesIniciantes,
-        codParticipantesModificados, dataFormatada
+        codParticipantesModificados, dataFormatada, unidade, qntdRevistas
     } = req.body;
 
     try {
@@ -258,6 +258,7 @@ app.post('/envia-atividade', async (req, res) => {
                 title: "Atividade e Participação para",
                 ufCrm37_1680781222: dataFormatada,
                 ufCrm37_1680781696: pregador,
+                ufCrm37_1680781560: unidade,
                 contactId: contato,
                 ufCrm37_1680785492: observacao,
                 ufCrm37_1681127182: atividade,
@@ -266,7 +267,8 @@ app.post('/envia-atividade', async (req, res) => {
                 ufCrm37_1680782329: motivacao,
                 ufCrm37_1680785178: participantesTotais,
                 ufCrm37_1680785259: participantesIniciantes,
-                ufCrm37_1680785090: codParticipantesModificados
+                ufCrm37_1680785090: codParticipantesModificados,
+                ufCrm37_1724262412: qntdRevistas
             }
         });
 
@@ -284,7 +286,7 @@ app.post('/envia-solicitacao', async (req, res) => {
     try {
         const response = await axios.post('https://religiaodedeus.bitrix24.com/rest/1618/eid3z4w5t9h1dw8y/tasks.task.add', {
             fields: {
-                TITLE: `Solicitação de Luis pelo app`,
+                TITLE: `Solicitação de ${pregador} pelo app`,
                 DESCRIPTION: observacao,
                 RESPONSIBLE_ID: pregador,
                 GROUP_ID: 118

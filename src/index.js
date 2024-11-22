@@ -137,7 +137,7 @@ app.get("/contatos", async (req, res) => {
 
         const itens = data.result.map(obj => ({
             id: obj.ID,
-            text: `${obj.NAME.trim()} ${obj.LAST_NAME ? obj.LAST_NAME.trim() : obj.SECOND_NAME}`.trim()
+            text: `${obj.NAME} ${obj.LAST_NAME ? obj.LAST_NAME : obj.SECOND_NAME}`
         }));
 
         res.send({ results: itens, total, next });

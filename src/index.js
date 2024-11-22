@@ -125,8 +125,7 @@ app.get("/contatos", async (req, res) => {
     try {
         let params = {
             FILTER: {
-                "%NAME": req.query.term,
-                "%LAST_NAME": req.query.term
+                'FULL_NAME': req.query.term
             },
             start: 0,
         };
@@ -138,8 +137,7 @@ app.get("/contatos", async (req, res) => {
 
         const itens = data.result.map(obj => ({
             id: obj.ID,
-            text: `${obj.NAME} ${obj.LAST_NAME}`
-            //text: `${obj.NAME.trim()} ${obj.SECOND_NAME ? obj.SECOND_NAME.trim() + ' ' : ''}${obj.LAST_NAME ? obj.LAST_NAME.trim() : ''}`.trim()
+            text: `${obj.NAME.trim()} ${obj.LAST_NAME ? obj.LAST_NAME.trim() : obj.SECOND_NAME}`.trim()
         }));
 
         res.send({ results: itens, total, next });
